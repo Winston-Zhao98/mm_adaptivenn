@@ -1,0 +1,45 @@
+# MM-AdaptiveNN — Python dependencies
+# Tested on Python 3.9, CUDA 12.1
+#
+# INSTALL ORDER (important on Windows to avoid OpenBLAS DLL conflicts):
+#
+#   Step 1 — Install scipy via conda BEFORE pip packages (prevents torch/scipy DLL conflict):
+#     conda install scipy
+#
+#   Step 2 — Install pip packages:
+#     pip install -r requirements.txt
+#
+# If using pip-only (no conda), downgrade scipy to avoid the DLL issue:
+#     pip install "scipy==1.10.1"
+#     pip install -r requirements.txt
+
+# ── Core deep learning ─────────────────────────────────────────────────────────
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# ── Vision backbone ────────────────────────────────────────────────────────────
+timm>=0.9.0                    # ViT-S/16 encoder (required for default config)
+
+# ── Language / audio backbones ─────────────────────────────────────────────────
+transformers>=4.18.0,<4.45.0   # ASTModel, CLIPTextModel, T5EncoderModel
+                               # Upper bound avoids scipy DLL conflict on Windows
+                               # (transformers>=4.45 imports scipy at module level)
+openai-clip>=1.0.1             # Primary CLIP language encoder
+                               # (falls back to transformers CLIPTextModel if absent)
+
+# ── Audio processing ───────────────────────────────────────────────────────────
+# torchaudio already listed above (ships with torch bundle)
+
+# ── Data / evaluation ──────────────────────────────────────────────────────────
+scipy>=1.7.0                   # SALICON .mat loading, AUC-Judd metric
+                               # Install via conda on Windows to avoid DLL conflict
+Pillow>=9.0.0
+numpy>=1.21.0
+
+# ── Optional: VGGish audio encoder (ablation only) ────────────────────────────
+# torchvggish                  # Uncomment if using --audio_backbone vggish
+                               # Falls back to lightweight CNN stub if not installed
+
+# ── Development / testing ──────────────────────────────────────────────────────
+pytest>=6.0.0
